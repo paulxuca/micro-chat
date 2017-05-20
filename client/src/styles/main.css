@@ -1,0 +1,53 @@
+@keyframes open {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-250px);        
+    }
+}
+
+.micro-app-root {
+    position: absolute;
+    width: 300px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;    
+    font-family: Helvetica Neue,Arial,sans-serif;
+}
+
+.micro-app-root-active {
+    animation: open 0.3s ease forwards;
+}
+
+.micro-app-root .app-trigger-header {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    background: #293544;
+}
+
+.app-trigger-header h3 {
+    font-size: 14px;
+    margin-left: 15px;
+    font-weight: 500;
+    letter-spacing: .2px;
+}
+
+.app-trigger-close {
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.micro-chat-wrapper {
+    height: 200px;
+}
+
+.micro-reply-wrapper {
+    height: 50px;
+    background: #F8F9FB;
+}
