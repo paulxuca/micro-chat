@@ -20,7 +20,7 @@ module.exports = {
                         loader: 'babel-loader',
                         options: {
                             presets: [['es2015', {modules: false, loose: true}]],
-                            plugins: [['inferno']]
+                            plugins: [['inferno', {imports: true}]]
                         }
                     }
                 ]
@@ -35,6 +35,6 @@ module.exports = {
     },
     devServer: {
         publicPath: '/build',
-        port: 3000
+        port: 3001
     }
 };

@@ -14,15 +14,18 @@
     "babel-loader": "^7.0.0",
     "babel-plugin-inferno": "^3.2.0",
     "babel-preset-es2015": "^6.24.1",
-    "raw-loader": "^0.5.1",
+    "css-loader": "^0.28.1",
+    "style-loader": "^0.17.0",
     "webpack": "^2.5.1",
     "webpack-dev-server": "^2.4.5"
   },
   "dependencies": {
+    "auto-bind": "^1.1.0",
     "classnames": "^2.2.5",
     "inferno": "^3.1.2",
     "inferno-component": "^3.1.2",
     "inferno-redux": "^3.1.2",
-    "redux": "^3.6.0"
+    "redux": "^3.6.0",
+    "shortid": "^2.2.8"
   }
 }

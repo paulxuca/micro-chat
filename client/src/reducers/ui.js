@@ -1,6 +1,7 @@
 import {
     OPEN_CHAT,
-    CLOSE_CHAT
+    CLOSE_CHAT,
+    SET_CONFIG
 } from '../action-types';
 
 export const isOpenReducer = () => (state = false, action) => {

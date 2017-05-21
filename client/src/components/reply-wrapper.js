@@ -2,7 +2,7 @@ import Inferno from 'inferno';
 
 export default function ReplyWrapper({children}) {
     return (
-        <div className="micro-reply-wrapper">
+        <div className="microchat-reply-wrapper">
             {children}
         </div>
     );
