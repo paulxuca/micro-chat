@@ -1,12 +1,12 @@
 const shortid = require('shortid');
 const github = require('./github');
 
-const createMessage = (message, isYou = true) => {
+const createMessage = (message, id, isYou = true) => {
 	return {
-		id: shortid.generate(),
 		isSent: true,
 		message,		
-		isYou
+		isYou,
+		id		
 	};
 };
 
@@ -20,7 +20,7 @@ const findIssues = () => {
 	.catch(() => resolve([])));
 };
 
-const findIssueById = (id) => {
+const findIssueById = id => {
 	return findIssues()
 		.then(res => {
 			const filteredData = res.data.filter(issue => {
@@ -51,7 +51,7 @@ const createIssueReply = (id, message) => {
 		}));
 };
 
-const getCommentsAndBodyForIssue = (id) => {
+const getCommentsAndBodyForIssue = id => {
 	const messages = [];
 
 	return new Promise(resolve => findIssueById(id)
@@ -61,7 +61,7 @@ const getCommentsAndBodyForIssue = (id) => {
 			return;
 		}
 
-		messages.push(createMessage(res.body));
+		messages.push(createMessage(res.body, null));
 
 		github.issues.getComments({
 			owner: process.env.GITHUB_USERNAME,
@@ -70,13 +70,13 @@ const getCommentsAndBodyForIssue = (id) => {
 		})
 		.then(({data}) => {
 			const parsedMessages = data.map(message => {
-				const {body} = message;
+				const {body, id} = message;
 
 				if ((/\`\`\`reply/).test(body)) {
-					return createMessage(body.replace(/```reply|```/gi, '').replace(/\r\n/, ''), false);
+					return createMessage(body.replace(/```reply|```/gi, '').replace(/\r\n/, ''), id, false);
 				}
 
-				return createMessage(body.replace('>', ''));
+				return createMessage(body.replace('>', ''), id);
 			});
 
 			resolve({
@@ -87,10 +87,34 @@ const getCommentsAndBodyForIssue = (id) => {
 	}));
 };
 
+const getCommentsPastId = (id, issueId, stackedMessages) => {
+	return getCommentsAndBodyForIssue(id)
+		.then(({messages, lastId}) => {
+			const newMessages = [];			
+			let shouldRecord = false;
+
+			messages.forEach(message => {
+				if (shouldRecord && !message.isYou) {
+					newMessages.push(message);
+				}
+
+				if (message.id === issueId) {
+					shouldRecord = true;
+				}
+			});
+
+			return {
+				messages: newMessages,
+				lastId
+			};
+		});
+};
+
 module.exports = {
 	findIssues,
 	findIssueById,
 	createIssue,
 	createIssueReply,
-	getCommentsAndBodyForIssue
+	getCommentsAndBodyForIssue,
+	getCommentsPastId
 };

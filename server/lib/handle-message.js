@@ -1,7 +1,5 @@
 const {findIssueById, createIssue} = require('./issues');
-const MessageBuffer = require('./message-buffer');
-
-const messsgeBuffers = {};
+const buffers = require('./message-buffers');
 
 module.exports = async ({data, session}) => {
     const issue = await findIssueById(session);
@@ -10,14 +8,14 @@ module.exports = async ({data, session}) => {
         await createIssue(session, data);
     }
 
-    if (!messsgeBuffers[session]) {
-        messsgeBuffers[session] = new MessageBuffer(session);
+    if (!buffers.get(session)) {
+        buffers.add(session);
 
         if (!issue) {
             return null;
         }
     }
 
-    messsgeBuffers[session].push(data);
+    buffers.push(session, data);
     return null;
 };

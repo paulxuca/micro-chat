@@ -11,6 +11,9 @@ export const configReducer = () => (state = {}, action) => {
         case SET_CONFIG:
             return Object.assign({}, state, action.config);
         
+        case FETCH_MESSAGES_SUCCESS:
+            return Object.assign({}, state, {lastId: action.lastId});
+
         default:
             return state;
     }

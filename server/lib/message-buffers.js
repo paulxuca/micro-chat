@@ -46,4 +46,24 @@ MessageBuffer.prototype.sendMesssage = function() {
         });
 };
 
-module.exports = MessageBuffer;
+function MessageBuffers() {
+    this.buffers = {};
+
+    this.add = this.add.bind(this);
+    this.get = this.get.bind(this);
+    this.push = this.push.bind(this);
+}
+
+MessageBuffers.prototype.add = function(id) {
+    this.buffers[id] = new MessageBuffer(id);
+};
+
+MessageBuffers.prototype.get = function(id) {
+    return this.buffers[id];
+};
+
+MessageBuffers.prototype.push = function(id, data) {
+    this.buffers[id].push(data);
+};
+
+module.exports = new MessageBuffers();

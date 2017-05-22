@@ -1,6 +1,7 @@
 const {json} = require('micro');
 const cors = require('micro-cors')();
 const handleInit = require('./lib/handle-init');
+const handlePoll = require('./lib/handle-poll');
 const handleMessage = require('./lib/handle-message');
 const handleInitWithSession = require('./lib/handle-init-with-session');
 
@@ -25,6 +26,10 @@ async function handler(req, res) {
 
     if (intent === 'init') {
         return handleInit(data);
+    }
+
+    if (intent === 'poll') {
+        return handlePoll(data);
     }
 
     if (intent === 'message') {
