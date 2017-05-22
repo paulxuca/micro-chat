@@ -2,7 +2,7 @@ const {json} = require('micro');
 const cors = require('micro-cors')();
 const handleInit = require('./lib/handle-init');
 const handleMessage = require('./lib/handle-message');
-const handleInitWithSession = require('./lib/handle-init');
+const handleInitWithSession = require('./lib/handle-init-with-session');
 
 if (!process.env.GITHUB_USERNAME) {
     console.log('Missing github username!');

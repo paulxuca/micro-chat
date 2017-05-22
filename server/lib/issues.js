@@ -1,23 +1,26 @@
+const shortid = require('shortid');
 const github = require('./github');
 
-function findIssues() {
-	return new Promise((resolve, reject) => {
-		github.issues
-			.getForRepo({
-				repo: process.env.GITHUB_REPO,
-				owner: process.env.GITHUB_USERNAME,
-				labels: 'microchat'
-			}, (err, data) => {
-				if (err) {
-					reject([]);
-				}
+const createMessage = (message, isYou = true) => {
+	return {
+		id: shortid.generate(),
+		isSent: true,
+		message,		
+		isYou
+	};
+};
 
-				resolve(data);
-			});
-	});
-}
+const findIssues = () => {
+	return new Promise((resolve, reject) => github.issues.getForRepo({
+		repo: process.env.GITHUB_REPO,
+		owner: process.env.GITHUB_USERNAME,
+		labels: 'microchat'
+	})
+	.then(resolve)
+	.catch(() => resolve([])));
+};
 
-function findIssueById(id) {
+const findIssueById = (id) => {
 	return findIssues()
 		.then(res => {
 			const filteredData = res.data.filter(issue => {
@@ -26,9 +29,9 @@ function findIssueById(id) {
 
 			return filteredData.length > 0 ? filteredData[0] : false;
 		});
-}
+};
 
-function createIssue(id, data) {
+const createIssue = (id, data) => {
 	return github.issues.create({
 		owner: process.env.GITHUB_USERNAME,
 		repo: process.env.GITHUB_REPO,
@@ -36,23 +39,58 @@ function createIssue(id, data) {
 		body: data.message,
 		labels: ['microchat']
 	});
-}
+};
 
-function createIssueReply(id, message) {
+const createIssueReply = (id, message) => {
 	return findIssueById(id)
-		.then(({number}) => {
-			github.issues.createComment({
-				owner: process.env.GITHUB_USERNAME,
-				repo: process.env.GITHUB_REPO,
-				body: message,
-				number
+		.then(({number}) => github.issues.createComment({
+			owner: process.env.GITHUB_USERNAME,
+			repo: process.env.GITHUB_REPO,
+			body: message,
+			number
+		}));
+};
+
+const getCommentsAndBodyForIssue = (id) => {
+	const messages = [];
+
+	return new Promise(resolve => findIssueById(id)
+	.then((res) => {
+		if (!res) {
+			resolve(messages);
+			return;
+		}
+
+		messages.push(createMessage(res.body));
+
+		github.issues.getComments({
+			owner: process.env.GITHUB_USERNAME,
+			repo: process.env.GITHUB_REPO,
+			number: res.number
+		})
+		.then(({data}) => {
+			const parsedMessages = data.map(message => {
+				const {body} = message;
+
+				if ((/\`\`\`reply/).test(body)) {
+					return createMessage(body.replace(/```reply|```/gi, '').replace(/\r\n/, ''), false);
+				}
+
+				return createMessage(body.replace('>', ''));
+			});
+
+			resolve({
+				messages: [...messages, ...parsedMessages],
+				lastId: (data[data.length - 1] || {id: false}).id
 			});
 		});
-}
+	}));
+};
 
 module.exports = {
 	findIssues,
 	findIssueById,
 	createIssue,
-	createIssueReply
+	createIssueReply,
+	getCommentsAndBodyForIssue
 };
