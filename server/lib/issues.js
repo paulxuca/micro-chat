@@ -69,15 +69,21 @@ const getCommentsAndBodyForIssue = id => {
 			number: res.number
 		})
 		.then(({data}) => {
-			const parsedMessages = data.map(message => {
+			const parsedMessages = data.reduce((messages, message) => {
 				const {body, id} = message;
 
 				if ((/\`\`\`reply/).test(body)) {
-					return createMessage(body.replace(/```reply|```/gi, '').replace(/\r\n/, ''), id, false);
+					return messages.concat(createMessage(body.replace(/```reply|```/gi, '').replace(/\r\n/, ''), id, false));
 				}
 
-				return createMessage(body.replace('>', ''), id);
-			});
+				const splitMessages = body.split(/\>|\n\>/)
+				.filter(messageBody => messageBody.trim())
+				.map(messageBody => {
+					return createMessage(messageBody, id);
+				});
+
+				return messages.concat(...splitMessages);
+			}, []);
 
 			resolve({
 				messages: [...messages, ...parsedMessages],
