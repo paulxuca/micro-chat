@@ -105,7 +105,7 @@
     font-size: 12px;
     padding: 10px;
     border-radius: 3px;
-    margin: 5px 0;
+    margin: 10px 0;
     white-space: pre-wrap;
 }
 
@@ -114,6 +114,10 @@
     background: #42D681;
     margin-left: 20px;
     border-bottom-right-radius: 0;
+}
+
+.microchat-chat-entry.not-you {
+    background: #F8F9FB;
 }
 
 .microchat-chat-entry.not-sent {

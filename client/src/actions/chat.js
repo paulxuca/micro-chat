@@ -1,6 +1,11 @@
 import shortid from 'shortid';
 import fetch from '../lib/fetch-with-intent';
-import {SEND_MESSAGE, SEND_MESSAGE_SUCCESS} from '../action-types';
+import {
+    SEND_MESSAGE,
+    SEND_MESSAGE_SUCCESS,
+    FETCH_MESSAGES,
+    FETCH_MESSAGES_SUCCESS
+} from '../action-types';
 
 export const sendMessage = () => (dispatch, getState) => {
     const {
@@ -16,12 +21,10 @@ export const sendMessage = () => (dispatch, getState) => {
     }
 
     const messageId = shortid.generate();
-    const now = new Date().getTime();
 
     const message = {
         id: messageId,
         message: replyText,
-        sentAt: now,        
         sent: false,
         isYou: true,
     };
@@ -30,4 +33,14 @@ export const sendMessage = () => (dispatch, getState) => {
     fetch(host, 'message', message, id).then(() => {
         dispatch({type: SEND_MESSAGE_SUCCESS, id: messageId});
     });
+};
+
+export const pollMessages = () => (dispatch, getState) => {
+    const {
+        config: {
+            lastId
+        }
+    } = getState();
+
+    dispatch({type: FETCH_MESSAGES});
 };

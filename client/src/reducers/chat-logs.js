@@ -1,4 +1,4 @@
-import {SEND_MESSAGE, SEND_MESSAGE_SUCCESS} from '../action-types';
+import {SEND_MESSAGE, SEND_MESSAGE_SUCCESS, INIT_WITH_SESSION_SUCCESS} from '../action-types';
 
 export default () => (state = [], action) => {
     switch (action.type) {
@@ -16,6 +16,9 @@ export default () => (state = [], action) => {
                 return messages.concat(message);
             }, []);
         }
+
+        case INIT_WITH_SESSION_SUCCESS:
+            return action.logs;
 
         default:
             return state;

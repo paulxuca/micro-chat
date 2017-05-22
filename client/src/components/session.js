@@ -6,7 +6,11 @@ export default class Session extends Component {
     componentDidMount() {
         const {init, host} = this.props;
 
-        init(host);
+        init(host).then((shouldStartPoll) => shouldStartPoll && this.poll());
+    }
+
+    poll() {
+        console.log('DOGS');
     }
 
     render() {
