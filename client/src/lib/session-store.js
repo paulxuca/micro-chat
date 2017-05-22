@@ -1,6 +1,6 @@
 export default data => {
     if (!data) {
-        return JSON.parse(localStorage['microchat-session']);
+        return JSON.parse(localStorage['microchat-session'] || null);
     }
 
     const currentData = 'microchat-session' in localStorage ? JSON.parse(localStorage['microchat-session']) : {};

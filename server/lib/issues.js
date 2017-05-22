@@ -38,8 +38,21 @@ function createIssue(id, data) {
 	});
 }
 
+function createIssueReply(id, message) {
+	return findIssueById(id)
+		.then(({number}) => {
+			github.issues.createComment({
+				owner: process.env.GITHUB_USERNAME,
+				repo: process.env.GITHUB_REPO,
+				body: message,
+				number
+			});
+		});
+}
+
 module.exports = {
 	findIssues,
 	findIssueById,
-	createIssue
+	createIssue,
+	createIssueReply
 };

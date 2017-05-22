@@ -3,19 +3,21 @@ const MessageBuffer = require('./message-buffer');
 
 const messsgeBuffers = {};
 
-module.exports = async (res, {data, session}) => {
+module.exports = async ({data, session}) => {
     const issue = await findIssueById(session);
 
-    if (!issue && !messsgeBuffers[session]) {
-        messsgeBuffers[session] = {};
+    if (!issue) {
         await createIssue(session, data);
     }
 
-    if (!(messsgeBuffers[session] instanceof MessageBuffer)) {
+    if (!messsgeBuffers[session]) {
         messsgeBuffers[session] = new MessageBuffer(session);
-    } else {
-        messsgeBuffers[session].push(data);
+
+        if (!issue) {
+            return null;
+        }
     }
 
-    return {};
+    messsgeBuffers[session].push(data);
+    return null;
 };

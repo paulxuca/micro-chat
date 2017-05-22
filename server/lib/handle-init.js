@@ -1,7 +1,7 @@
 const shortid = require('shortid');
 const config = require('../config');
 
-module.exports = function (res, data) {
+module.exports = (data) => {
     const initData = {
         id: shortid.generate(),
         teamName: config.teamName

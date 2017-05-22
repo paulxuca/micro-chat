@@ -106,6 +106,7 @@
     padding: 10px;
     border-radius: 3px;
     margin: 5px 0;
+    white-space: pre-wrap;
 }
 
 .microchat-chat-entry.you {

@@ -1,9 +1,7 @@
 import {connect} from 'inferno-redux';
 import Session from '../components/session';
-import {setConfig} from '../actions/microchat';
+import {init} from '../actions/microchat';
 
-const mapDispatchToProps = {
-    init: setConfig
-};
+const mapDispatchToProps = {init};
 
 export default connect(null, mapDispatchToProps)(Session);

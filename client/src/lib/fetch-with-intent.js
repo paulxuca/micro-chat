@@ -10,5 +10,11 @@ export default (host, intent, data = {}, session = null) => {
         session
     };
 
-    return fetch(host, {method: 'POST', body: JSON.stringify(intentData)}).then(data => data.json());
+    return fetch(host, {method: 'POST', body: JSON.stringify(intentData)}).then(res => {
+        if (res.status === 204) {
+            return {};
+        }
+
+        return res.json();
+    });
 };

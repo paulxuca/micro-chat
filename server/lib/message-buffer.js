@@ -1,10 +1,13 @@
+const {createIssueReply} = require('./issues');
+
 // Times out a create message call, so we don't get a bunch of random replies to issues made.
-function MessageBuffer(id, config = {buffer: 10000, isReply: false}) {
+function MessageBuffer(id, config = {buffer: 10000}) {
     if (!id) {
         throw new Error('Missing id for message buffer!');
     }
 
     this.config = config;
+    this.id = id;
     this.stack = [];
     this.messageTimeout = null;
 
@@ -31,8 +34,16 @@ MessageBuffer.prototype.sendMesssage = function() {
         console.log('Sending message');
     }
 
-    this.stack = [];
     clearTimeout(this.messageTimeout);
+
+    const stringMessage = this.stack
+    .reduce((prev, {message}) => prev.concat(message.split('\n')), [])
+    .reduce((prev, message) => prev ? `${prev}\n\>${message}` : `\>${message}`, '');
+
+    createIssueReply(this.id, stringMessage)
+        .then(() => {
+            this.stack = [];
+        });
 };
 
 module.exports = MessageBuffer;

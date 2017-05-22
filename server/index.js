@@ -2,6 +2,7 @@ const {json} = require('micro');
 const cors = require('micro-cors')();
 const handleInit = require('./lib/handle-init');
 const handleMessage = require('./lib/handle-message');
+const handleInitWithSession = require('./lib/handle-init');
 
 if (!process.env.GITHUB_USERNAME) {
     console.log('Missing github username!');
@@ -23,11 +24,15 @@ async function handler(req, res) {
     const {intent} = data;
 
     if (intent === 'init') {
-        return handleInit(res, data);
+        return handleInit(data);
     }
 
     if (intent === 'message') {
-        return await handleMessage(res, data);
+        return await handleMessage(data);
+    }
+
+    if (intent === 'init-with-session') {
+        return await handleInitWithSession(data);
     }
 };
 
