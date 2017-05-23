@@ -12,14 +12,22 @@ export default class Session extends Component {
     componentDidMount() {
         const {init, host} = this.props;
 
-        init(host).then((shouldStartPoll) => shouldStartPoll && this.poll());
+        init(host);
+    }
+
+    componentWillReceiveProps(newProps) {
+        const {shouldPoll} = newProps;
+        
+        if (shouldPoll !== this.props.shouldPoll) {
+            this.poll();
+        }
     }
 
     poll() {
         const {isFetching, pollMessages} = this.props;
 
         if (isFetching) {
-            setTimeout(this.poll, 5000);
+            setTimeout(this.poll, 2000);
             return;
         }
 

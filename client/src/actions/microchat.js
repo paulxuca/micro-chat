@@ -11,24 +11,21 @@ export const initWithSession = () => ({type: INIT_WITH_SESSION});
 export const initWithSessionSuccess = logs => ({type: INIT_WITH_SESSION_SUCCESS, logs});
 
 export const init = host => dispatch => {
-    return new Promise((resolve) => {
-        dispatch(initWithSession());
-        const session = sessionStore();
+    const session = sessionStore();
 
-        if (session) {
-            dispatch(setConfig(session));
-            fetch(host, 'init-with-session', session.id).then(({messages, lastId}) => {
-                dispatch(initWithSessionSuccess(messages));
-                dispatch(setConfig({lastId}));
-                resolve(true);
-            });
+    if (session) {
+        dispatch(initWithSession());        
+        dispatch(setConfig(session));
 
-            return;
-        }
+        fetch(host, 'init-with-session', session.id).then(({messages, lastId}) => {
+            dispatch(initWithSessionSuccess(messages));
+            dispatch(setConfig({lastId}));
+        });
 
-        fetch(host, 'init')
-            .then(sessionStore)
-            .then(config => dispatch(setConfig(config)))
-            .then(() => resolve(false));
-    });
+        return;
+    }
+
+    fetch(host, 'init')
+        .then(sessionStore)
+        .then(config => dispatch(setConfig(config)));
 };

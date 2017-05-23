@@ -25,7 +25,7 @@ export const sendMessage = () => (dispatch, getState) => {
     const message = {
         id: messageId,
         message: replyText,
-        sent: false,
+        isSent: false,
         isYou: true,
     };
 

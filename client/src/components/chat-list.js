@@ -1,8 +1,27 @@
 import Inferno from 'inferno';
+import Component from 'inferno-component';
 import classnames from 'classnames';
 
-export default function ChatList({messages}) {
-    const map = messageData => {
+export default class ChatList extends Component {
+    constructor() {
+        super();
+        
+        this.onRef = this.onRef.bind(this);
+    }
+    
+    componentWillReceiveProps(newProps) {
+        if (newProps.messages.length !== this.props.messages.length) {
+            this.handleNewMessages();
+        }
+    }
+
+    handleNewMessages() {
+        const PADDING_BOTTOM = 70;
+
+        setImmediate(() => this.chatListRef.scrollTop = this.chatListRef.scrollHeight + PADDING_BOTTOM);
+    }
+    
+    message(messageData) {
         const {message, isYou, isSent} = messageData;
 
         const classes = classnames({
@@ -13,11 +32,17 @@ export default function ChatList({messages}) {
         });
 
         return <p className={classes}>{message}</p>;
-    };
-    
-    return (
-        <div className="microchat-chat-logs">
-            {messages.map(map)}
-        </div>
-    );
+    }
+
+    onRef(ref) {
+        this.chatListRef = ref;
+    }
+
+    render() {
+        return (
+            <div className="microchat-chat-logs" ref={this.onRef}>
+                {this.props.messages.map(this.message)}
+            </div>
+        );
+    }
 }

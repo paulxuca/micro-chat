@@ -23,7 +23,7 @@ export default () => (state = [], action) => {
         }
 
         case INIT_WITH_SESSION_SUCCESS:
-            return action.logs;
+            return action.logs || [];
 
         case FETCH_MESSAGES_SUCCESS:
             return [...state, ...action.messages];
