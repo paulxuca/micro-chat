@@ -93,13 +93,17 @@ const getCommentsAndBodyForIssue = id => {
 	}));
 };
 
-const getCommentsPastId = (id, issueId, stackedMessages) => {
+const getCommentsPastId = (id, issueId) => {
 	return getCommentsAndBodyForIssue(id)
 		.then(({messages, lastId}) => {
 			const newMessages = [];			
 			let shouldRecord = false;
 
 			messages.forEach(message => {
+				if (!issueId) {
+					shouldRecord = true;
+				}
+
 				if (shouldRecord && !message.isYou) {
 					newMessages.push(message);
 				}
